@@ -49,7 +49,9 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         /* Controles del header */
@@ -111,9 +113,9 @@
         .survey-container {
             background-color: var(--card-bg);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1rem;
             box-shadow: var(--card-shadow);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .survey-step {
@@ -362,6 +364,71 @@
         body.dark-mode .subtitle {
             color: var(--text-color);
             opacity: 0.9;
+        }
+
+        /* Estilos responsivos para móviles */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .survey-container {
+                padding: 1rem;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.5rem;
+            }
+
+            .emotion-option {
+                padding: 1rem;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                text-align: left;
+            }
+
+            .emotion-icon {
+                margin-right: 1rem;
+                margin-bottom: 0;
+                font-size: 1.5rem;
+                min-width: 30px;
+            }
+
+            #survey-q2,
+            #survey-q5 {
+                padding: 0.5rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .navigation {
+                margin-top: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+                margin-top: 1rem;
+            }
+
+            .playlist-container {
+                padding: 1rem;
+            }
+
+            .playlist-cover {
+                width: 120px;
+                height: 120px;
+            }
         }
     </style>
 </head>
