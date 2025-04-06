@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodTunes - Explorador de Música por Emoción</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --happy: #fdcb6e;
+            --sad: #74b9ff;
+            --energetic: #e17055;
+            --calm: #00b894;
+            --angry: #d63031;
+            --romantic: #e84393;
+
+            --bg-color: #f5f6fa;
+            --text-color: #2d3436;
+            --card-bg: white;
+            --card-border: #eee;
+            --progress-bg: #eee;
+            --slider-bg: #ddd;
+            --btn-text: white;
+
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --btn-hover-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Controles del header */
+        .header-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .language-switcher select {
+            padding: 0.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--dark);
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .survey-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .survey-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .survey-step.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .emotion-option {
+            background-color: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 10px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .emotion-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .emotion-option.selected {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .emotion-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .happy {
+            color: var(--happy);
+        }
+
+        .sad {
+            color: var(--sad);
+        }
+
+        .energetic {
+            color: var(--energetic);
+        }
+
+        .calm {
+            color: var(--calm);
+        }
+
+        .angry {
+            color: var(--angry);
+        }
+
+        .romantic {
+            color: var(--romantic);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: var(--btn-text);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 1.5rem;
+        }
+
+        .btn:hover {
+            background-color: #5649c0;
+            transform: translateY(-2px);
+            box-shadow: var(--btn-hover-shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f5f6fa;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .survey-result {
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--progress-bg);
+            border-radius: 4px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .mood-result {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background-color: var(--secondary);
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .mood-emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Estilos para la playlist resultante */
+        .playlist-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-top: 2rem;
+        }
+
+        .playlist-cover {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            margin: 0 auto 1rem;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .song-list {
+            list-style: none;
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .song-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .song-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Estilos para modo oscuro */
+        body.dark-mode {
+            --bg-color: #1a1a2e;
+            --text-color: #f5f6fa;
+            --card-bg: #16213e;
+            --card-border: #2d4059;
+            --progress-bg: #2d4059;
+            --slider-bg: #2d4059;
+            --dark: #f5f6fa;
+
+            background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--primary);
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #1f2a4a;
+        }
+
+        body.dark-mode .btn-icon {
+            color: var(--text-color);
+        }
+
+        body.dark-mode .language-switcher select {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-color: var(--card-border);
+        }
+
+        body.dark-mode .subtitle {
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-controls">
+                <button id="theme-toggle" class="btn-icon" title="Cambiar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="language-switcher">
+                    <select id="language-select">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+            <h1><i class="fas fa-music"></i> MoodTunes</h1>
+            <p class="subtitle">Descubre la música perfecta para tu estado de ánimo</p>
+        </header>
+
+        <!-- Encuesta de estado de ánimo -->
+        <div class="survey-container" id="survey-container">
+            <div class="survey-step active" id="survey-start">
+                <h2>Encuesta de Estado de Ánimo</h2>
+                <p class="question-text">Vamos a hacerte algunas preguntas para determinar tu estado emocional actual y
+                    recomendarte la música perfecta.</p>
+                <button class="btn" id="start-survey">Comenzar Encuesta</button>
+            </div>
+
+            <!-- Pregunta 1 -->
+            <div class="survey-step" id="survey-q1">
+                <h2>Pregunta 1 de 5</h2>
+                <p class="question-text">¿Cómo describirías tu energía general en este momento?</p>
+
+                <div class="options-grid">
+                    <div class="emotion-option" data-value="happy">
+                        <i class="fas fa-battery-full emotion-icon energetic"></i>
+                        <span>Alta energía, me siento activo</span>
+                    </div>
+                    <div class="emotion-option" data-value="calm">
+                        <i class="fas fa-battery-half emotion-icon calm"></i>
+                        <span>Equilibrado, ni alto ni bajo</span>
+                    </div>
+                    <div class="emotion-option" data-value="sad">
+                        <i class="fas fa-battery-quarter emotion-icon sad"></i>
+                        <span>Baja energía, me siento cansado</span>
+                    </div>
+                    <div class="emotion-option" data-value="angry">
+                        <i class="fas fa-bolt emotion-icon angry"></i>
+                        <span>Nervioso/agitado</span>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="survey-prev1" disabled>Anterior</button>
+                    <button class="btn" id="survey-next1">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Pregunta 2 -->
+            <div class="survey-step" id="survey-q2">
+                <h2>Pregunta 2 de 5</h2>
+                <p class="question-text">¿Qué emoción reconoces como la más intensa en este momento?</p>
+
+                <div class="options-grid">
+                    <div class="emotion-option" data-value="happy">
+                        <i class="fas fa-laugh emotion-icon happy"></i>
+                        <span>Alegría/Felicidad</span>
+                    </div>
+                    <div class="emotion-option" data-value="sad">
+                        <i class="fas fa-sad-tear emotion-icon sad"></i>
+                        <span>Tristeza/Melancolía</span>
+                    </div>
+                    <div class="emotion-option" data-value="angry">
+                        <i class="fas fa-angry emotion-icon angry"></i>
+                        <span>Enojo/Frustración</span>
+                    </div>
+                    <div class="emotion-option" data-value="calm">
+                        <i class="fas fa-smile emotion-icon calm"></i>
+                        <span>Paz/Tranquilidad</span>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="survey-prev2">Anterior</button>
+                    <button class="btn" id="survey-next2">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Pregunta 3 -->
+            <div class="survey-step" id="survey-q3">
+                <h2>Pregunta 3 de 5</h2>
+                <p class="question-text">¿Cómo te sientes físicamente?</p>
+
+                <div class="options-grid">
+                    <div class="emotion-option" data-value="energetic">
+                        <i class="fas fa-running emotion-icon energetic"></i>
+                        <span>Lleno de energía</span>
+                    </div>
+                    <div class="emotion-option" data-value="happy">
+                        <i class="fas fa-heartbeat emotion-icon happy"></i>
+                        <span>Bien, normal</span>
+                    </div>
+                    <div class="emotion-option" data-value="sad">
+                        <i class="fas fa-tired emotion-icon sad"></i>
+                        <span>Cansado/Agotado</span>
+                    </div>
+                    <div class="emotion-option" data-value="angry">
+                        <i class="fas fa-head-side-virus emotion-icon angry"></i>
+                        <span>Tenso/Agitado</span>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="survey-prev3">Anterior</button>
+                    <button class="btn" id="survey-next3">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Pregunta 4 -->
+            <div class="survey-step" id="survey-q4">
+                <h2>Pregunta 4 de 5</h2>
+                <p class="question-text">¿Qué tipo de actividad te apetece hacer ahora?</p>
+
+                <div class="options-grid">
+                    <div class="emotion-option" data-value="happy">
+                        <i class="fas fa-users emotion-icon happy"></i>
+                        <span>Socializar/Reír</span>
+                    </div>
+                    <div class="emotion-option" data-value="calm">
+                        <i class="fas fa-book emotion-icon calm"></i>
+                        <span>Relajarme solo</span>
+                    </div>
+                    <div class="emotion-option" data-value="energetic">
+                        <i class="fas fa-dumbbell emotion-icon energetic"></i>
+                        <span>Hacer ejercicio</span>
+                    </div>
+                    <div class="emotion-option" data-value="romantic">
+                        <i class="fas fa-heart emotion-icon romantic"></i>
+                        <span>Algo romántico</span>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="survey-prev4">Anterior</button>
+                    <button class="btn" id="survey-next4">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Pregunta 5 -->
+            <div class="survey-step" id="survey-q5">
+                <h2>Pregunta 5 de 5</h2>
+                <p class="question-text">¿Cómo describirías tu estado mental actual?</p>
+
+                <div class="options-grid">
+                    <div class="emotion-option" data-value="happy">
+                        <i class="fas fa-brain emotion-icon happy"></i>
+                        <span>Optimista/Positivo</span>
+                    </div>
+                    <div class="emotion-option" data-value="sad">
+                        <i class="fas fa-cloud-rain emotion-icon sad"></i>
+                        <span>Pesimista/Negativo</span>
+                    </div>
+                    <div class="emotion-option" data-value="calm">
+                        <i class="fas fa-spa emotion-icon calm"></i>
+                        <span>Tranquilo/Equilibrado</span>
+                    </div>
+                    <div class="emotion-option" data-value="angry">
+                        <i class="fas fa-fire emotion-icon angry"></i>
+                        <span>Agitado/Estresado</span>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="survey-prev5">Anterior</button>
+                    <button class="btn" id="survey-next5">Ver Resultado</button>
+                </div>
+            </div>
+
+            <!-- Resultado de la encuesta y playlist -->
+            <div class="survey-step survey-result" id="survey-result">
+                <h2>Tu Estado de Ánimo</h2>
+                <div class="mood-result" id="mood-result">
+                    <!-- Aquí se mostrará el resultado -->
+                </div>
+
+                <div class="playlist-container" id="playlist-container">
+                    <h3 id="playlist-title"></h3>
+                    <p id="playlist-description"></p>
+                    <div class="playlist-cover" id="playlist-cover"></div>
+                    <ul class="song-list" id="song-list">
+                        <!-- Las canciones se agregarán aquí con JavaScript -->
+                    </ul>
+                </div>
+
+                <button class="btn" id="restart-btn">Hacer otra encuesta</button>
+            </div>
+
+            <!-- Progreso -->
+            <div class="progress-container">
+                <div class="progress-bar" id="survey-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Textos multiidioma
+            const translations = {
+                es: {
+                    title: "MoodTunes",
+                    subtitle: "Descubre la música perfecta para tu estado de ánimo",
+                    startSurvey: "Comenzar Encuesta",
+                    surveyTitle: "Encuesta de Estado de Ánimo",
+                    surveyDescription: "Vamos a hacerte algunas preguntas para determinar tu estado emocional actual y recomendarte la música perfecta.",
+                    prevButton: "Anterior",
+                    nextButton: "Siguiente",
+                    resultButton: "Ver Resultado",
+                    restartButton: "Hacer otra encuesta",
+                    questions: {
+                        q1: "¿Cómo describirías tu energía general en este momento?",
+                        q2: "¿Qué emoción reconoces como la más intensa en este momento?",
+                        q3: "¿Cómo te sientes físicamente?",
+                        q4: "¿Qué tipo de actividad te apetece hacer ahora?",
+                        q5: "¿Cómo describirías tu estado mental actual?"
+                    },
+                    options: {
+                        energetic: "Alta energía, me siento activo",
+                        balanced: "Equilibrado, ni alto ni bajo",
+                        tired: "Baja energía, me siento cansado",
+                        nervous: "Nervioso/agitado",
+                        happy: "Alegría/Felicidad",
+                        sad: "Tristeza/Melancolía",
+                        angry: "Enojo/Frustración",
+                        calm: "Paz/Tranquilidad",
+                        socialize: "Socializar/Reír",
+                        relax: "Relajarme solo",
+                        exercise: "Hacer ejercicio",
+                        romantic: "Algo romántico",
+                        optimistic: "Optimista/Positivo",
+                        pessimistic: "Pesimista/Negativo",
+                        peaceful: "Tranquilo/Equilibrado",
+                        stressed: "Agitado/Estresado"
+                    },
+                    moods: {
+                        happy: {
+                            emoji: '😊',
+                            title: 'Feliz y Positivo',
+                            description: 'Te sientes alegre, optimista y lleno de energía positiva. ¡Disfruta de este buen momento!'
+                        },
+                        sad: {
+                            emoji: '😢',
+                            title: 'Triste o Melancólico',
+                            description: 'Parece que estás pasando por un momento de tristeza o melancolía. La música puede ser un buen acompañante.'
+                        },
+                        energetic: {
+                            emoji: '⚡',
+                            title: 'Energético y Activo',
+                            description: 'Tienes mucha energía para gastar. ¡Perfecto para moverte al ritmo de la música!'
+                        },
+                        calm: {
+                            emoji: '😌',
+                            title: 'Tranquilo y Relajado',
+                            description: 'Estás en un estado de paz y tranquilidad. Ideal para música relajante.'
+                        },
+                        angry: {
+                            emoji: '😠',
+                            title: 'Enojado o Frustrado',
+                            description: 'Parece que estás experimentando enojo o frustración. La música puede ayudarte a canalizar estas emociones.'
+                        },
+                        romantic: {
+                            emoji: '❤️',
+                            title: 'Romántico o Sensible',
+                            description: 'Tienes un estado emocional romántico o especialmente sensible. Perfecto para canciones con sentimiento.'
+                        }
+                    }
+                },
+                en: {
+                    title: "MoodTunes",
+                    subtitle: "Discover the perfect music for your mood",
+                    startSurvey: "Start Survey",
+                    surveyTitle: "Mood Survey",
+                    surveyDescription: "We'll ask you some questions to determine your current emotional state and recommend the perfect music.",
+                    prevButton: "Previous",
+                    nextButton: "Next",
+                    resultButton: "View Result",
+                    restartButton: "Take another survey",
+                    questions: {
+                        q1: "How would you describe your general energy right now?",
+                        q2: "What emotion do you recognize as the most intense at this moment?",
+                        q3: "How do you feel physically?",
+                        q4: "What kind of activity would you like to do now?",
+                        q5: "How would you describe your current mental state?"
+                    },
+                    options: {
+                        energetic: "High energy, I feel active",
+                        balanced: "Balanced, neither high nor low",
+                        tired: "Low energy, I feel tired",
+                        nervous: "Nervous/agitated",
+                        happy: "Joy/Happiness",
+                        sad: "Sadness/Melancholy",
+                        angry: "Anger/Frustration",
+                        calm: "Peace/Tranquility",
+                        socialize: "Socialize/Laugh",
+                        relax: "Relax alone",
+                        exercise: "Exercise",
+                        romantic: "Something romantic",
+                        optimistic: "Optimistic/Positive",
+                        pessimistic: "Pessimistic/Negative",
+                        peaceful: "Peaceful/Balanced",
+                        stressed: "Agitated/Stressed"
+                    },
+                    moods: {
+                        happy: {
+                            emoji: '😊',
+                            title: 'Happy and Positive',
+                            description: 'You feel cheerful, optimistic and full of positive energy. Enjoy this good moment!'
+                        },
+                        sad: {
+                            emoji: '😢',
+                            title: 'Sad or Melancholic',
+                            description: 'You seem to be going through a moment of sadness or melancholy. Music can be a good companion.'
+                        },
+                        energetic: {
+                            emoji: '⚡',
+                            title: 'Energetic and Active',
+                            description: 'You have a lot of energy to spend. Perfect for moving to the rhythm of the music!'
+                        },
+                        calm: {
+                            emoji: '😌',
+                            title: 'Calm and Relaxed',
+                            description: 'You are in a state of peace and tranquility. Ideal for relaxing music.'
+                        },
+                        angry: {
+                            emoji: '😠',
+                            title: 'Angry or Frustrated',
+                            description: 'You seem to be experiencing anger or frustration. Music can help you channel these emotions.'
+                        },
+                        romantic: {
+                            emoji: '❤️',
+                            title: 'Romantic or Sensitive',
+                            description: 'You are in a romantic or especially sensitive emotional state. Perfect for songs with feeling.'
+                        }
+                    }
+                }
+            };
+
+            // Variables de estado
+            let surveyAnswers = [];
+            let currentSurveyStep = 1;
+            let detectedMood = '';
+            let currentLanguage = 'es';
+
+            // Elementos del DOM
+            const surveySteps = document.querySelectorAll('.survey-step');
+            const surveyProgress = document.getElementById('survey-progress');
+            const moodResult = document.getElementById('mood-result');
+            const playlistContainer = document.getElementById('playlist-container');
+            const playlistTitle = document.getElementById('playlist-title');
+            const playlistDescription = document.getElementById('playlist-description');
+            const playlistCover = document.getElementById('playlist-cover');
+            const songList = document.getElementById('song-list');
+            const surveyContainer = document.getElementById('survey-container');
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageSelect = document.getElementById('language-select');
+
+            // Configuración inicial
+            initializeApp();
+
+            function initializeApp() {
+                // Cargar preferencias de tema
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.body.classList.toggle('dark-mode', savedTheme === 'dark');
+                updateThemeIcon(savedTheme);
+
+                // Cargar preferencia de idioma
+                const savedLanguage = localStorage.getItem('language') || 'es';
+                currentLanguage = savedLanguage;
+                languageSelect.value = savedLanguage;
+                updateContentLanguage(savedLanguage);
+
+                // Configurar event listeners
+                setupEventListeners();
+            }
+
+            function setupEventListeners() {
+                // Configuración de eventos para la encuesta
+                document.getElementById('start-survey').addEventListener('click', startSurvey);
+                document.getElementById('restart-btn').addEventListener('click', restartSurvey);
+
+                // Botones de navegación de la encuesta
+                document.getElementById('survey-next1').addEventListener('click', () => nextSurveyStep(1));
+                document.getElementById('survey-next2').addEventListener('click', () => nextSurveyStep(2));
+                document.getElementById('survey-next3').addEventListener('click', () => nextSurveyStep(3));
+                document.getElementById('survey-next4').addEventListener('click', () => nextSurveyStep(4));
+                document.getElementById('survey-next5').addEventListener('click', showSurveyResult);
+
+                document.getElementById('survey-prev2').addEventListener('click', () => prevSurveyStep(2));
+                document.getElementById('survey-prev3').addEventListener('click', () => prevSurveyStep(3));
+                document.getElementById('survey-prev4').addEventListener('click', () => prevSurveyStep(4));
+                document.getElementById('survey-prev5').addEventListener('click', () => prevSurveyStep(5));
+
+                // Configuración de opciones de emociones en la encuesta
+                document.querySelectorAll('.emotion-option').forEach(option => {
+                    option.addEventListener('click', function () {
+                        const questionId = this.closest('.survey-step').id;
+                        const questionNumber = parseInt(questionId.replace('survey-q', ''));
+
+                        // Deseleccionar otras opciones en la misma pregunta
+                        document.querySelectorAll(`#${questionId} .emotion-option`).forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+
+                        this.classList.add('selected');
+                        surveyAnswers[questionNumber - 1] = this.dataset.value;
+                    });
+                });
+
+                // Event listeners para tema e idioma
+                themeToggle.addEventListener('click', toggleTheme);
+                languageSelect.addEventListener('change', changeLanguage);
+            }
+
+            function toggleTheme() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeIcon(isDark ? 'dark' : 'light');
+            }
+
+            function updateThemeIcon(theme) {
+                const icon = themeToggle.querySelector('i');
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+
+            function changeLanguage() {
+                const language = languageSelect.value;
+                currentLanguage = language;
+                localStorage.setItem('language', language);
+                updateContentLanguage(language);
+            }
+
+            function updateContentLanguage(language) {
+                const lang = translations[language] || translations['es'];
+
+                // Actualizar textos estáticos
+                document.querySelector('h1').innerHTML = `<i class="fas fa-music"></i> ${lang.title}`;
+                document.querySelector('.subtitle').textContent = lang.subtitle;
+                document.getElementById('start-survey').textContent = lang.startSurvey;
+                document.querySelector('#survey-start h2').textContent = lang.surveyTitle;
+                document.querySelector('#survey-start .question-text').textContent = lang.surveyDescription;
+
+                // Actualizar botones de navegación
+                document.querySelectorAll('.btn-secondary').forEach(btn => {
+                    if (btn.textContent.includes("Anterior") || btn.textContent.includes("Previous")) {
+                        btn.textContent = lang.prevButton;
+                    }
+                });
+
+                document.querySelectorAll('.btn:not(.btn-secondary)').forEach(btn => {
+                    if (btn.textContent.includes("Siguiente") || btn.textContent.includes("Next")) {
+                        btn.textContent = lang.nextButton;
+                    }
+                    if (btn.textContent.includes("Ver Resultado") || btn.textContent.includes("View Result")) {
+                        btn.textContent = lang.resultButton;
+                    }
+                });
+
+                document.getElementById('restart-btn').textContent = lang.restartButton;
+
+                // Actualizar preguntas y opciones
+                updateSurveyQuestions(language);
+
+                // Si estamos en el resultado, actualizarlo también
+                if (currentSurveyStep === 6) {
+                    updateMoodResult();
+                }
+            }
+
+            function updateSurveyQuestions(language) {
+                const lang = translations[language] || translations['es'];
+
+                // Actualizar preguntas
+                document.querySelector('#survey-q1 .question-text').textContent = lang.questions.q1;
+                document.querySelector('#survey-q2 .question-text').textContent = lang.questions.q2;
+                document.querySelector('#survey-q3 .question-text').textContent = lang.questions.q3;
+                document.querySelector('#survey-q4 .question-text').textContent = lang.questions.q4;
+                document.querySelector('#survey-q5 .question-text').textContent = lang.questions.q5;
+
+                // Actualizar opciones de todas las preguntas
+                updateQuestionOptions('#survey-q1', [
+                    lang.options.energetic,
+                    lang.options.balanced,
+                    lang.options.tired,
+                    lang.options.nervous
+                ]);
+
+                updateQuestionOptions('#survey-q2', [
+                    lang.options.happy,
+                    lang.options.sad,
+                    lang.options.angry,
+                    lang.options.calm
+                ]);
+
+                updateQuestionOptions('#survey-q3', [
+                    lang.options.energetic,
+                    lang.options.happy,
+                    lang.options.tired,
+                    lang.options.nervous
+                ]);
+
+                updateQuestionOptions('#survey-q4', [
+                    lang.options.socialize,
+                    lang.options.relax,
+                    lang.options.exercise,
+                    lang.options.romantic
+                ]);
+
+                updateQuestionOptions('#survey-q5', [
+                    lang.options.optimistic,
+                    lang.options.pessimistic,
+                    lang.options.peaceful,
+                    lang.options.stressed
+                ]);
+            }
+
+            function updateQuestionOptions(questionId, options) {
+                const optionElements = document.querySelectorAll(`${questionId} .emotion-option span`);
+                optionElements.forEach((span, index) => {
+                    span.textContent = options[index];
+                });
+            }
+
+            function updateMoodResult() {
+                if (!detectedMood) return;
+
+                const lang = translations[currentLanguage] || translations['es'];
+                const moodData = lang.moods[detectedMood] || lang.moods['happy'];
+
+                moodResult.innerHTML = `
+                    <div class="mood-emoji">${moodData.emoji}</div>
+                    <h3>${moodData.title}</h3>
+                    <p>${moodData.description}</p>
+                `;
+            }
+
+            // Funciones de la encuesta
+            function startSurvey() {
+                currentSurveyStep = 1;
+                surveyAnswers = [];
+                updateSurveyStep();
+            }
+
+            function restartSurvey() {
+                // Resetear todas las selecciones
+                document.querySelectorAll('.emotion-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                // Volver al paso inicial
+                currentSurveyStep = 0;
+                surveyAnswers = [];
+                updateSurveyStep();
+
+                // Ocultar el resultado y mostrar el contenedor de la encuesta
+                document.getElementById('survey-result').classList.remove('active');
+                document.getElementById('survey-start').classList.add('active');
+
+                // Resetear la barra de progreso
+                surveyProgress.style.width = '0%';
+            }
+
+            function nextSurveyStep(current) {
+                if (!surveyAnswers[current - 1]) {
+                    alert(currentLanguage === 'es' ? 'Por favor selecciona una opción' : 'Please select an option');
+                    return;
+                }
+
+                currentSurveyStep = current + 1;
+                updateSurveyStep();
+            }
+
+            function prevSurveyStep(current) {
+                currentSurveyStep = current - 1;
+                updateSurveyStep();
+            }
+
+            function updateSurveyStep() {
+                // Ocultar todos los pasos
+                surveySteps.forEach(step => {
+                    step.classList.remove('active');
+                });
+
+                // Mostrar el paso actual
+                if (currentSurveyStep === 0) {
+                    document.getElementById('survey-start').classList.add('active');
+                } else if (currentSurveyStep <= 5) {
+                    document.getElementById(`survey-q${currentSurveyStep}`).classList.add('active');
+                } else {
+                    document.getElementById('survey-result').classList.add('active');
+                }
+
+                // Actualizar barra de progreso
+                const progressPercent = currentSurveyStep === 0 ? 0 : (currentSurveyStep / 5) * 100;
+                surveyProgress.style.width = `${progressPercent}%`;
+
+                // Habilitar/deshabilitar botones de anterior
+                if (currentSurveyStep > 1 && currentSurveyStep <= 5) {
+                    document.getElementById(`survey-prev${currentSurveyStep}`).disabled = false;
+                }
+            }
+
+            function showSurveyResult() {
+                if (!surveyAnswers[4]) {
+                    alert(currentLanguage === 'es' ? 'Por favor selecciona una opción' : 'Please select an option');
+                    return;
+                }
+
+                // Calcular el estado de ánimo predominante
+                detectedMood = calculatePredominantMood();
+
+                // Mostrar el resultado
+                updateMoodResult();
+
+                // Generar y mostrar la playlist automáticamente
+                generatePlaylist(detectedMood);
+
+                currentSurveyStep = 6;
+                updateSurveyStep();
+            }
+
+            function calculatePredominantMood() {
+                const moodCounts = {
+                    happy: 0,
+                    sad: 0,
+                    energetic: 0,
+                    calm: 0,
+                    angry: 0,
+                    romantic: 0
+                };
+
+                surveyAnswers.forEach(answer => {
+                    moodCounts[answer]++;
+                });
+
+                // Determinar el estado de ánimo con más votos
+                let predominantMood = 'happy';
+                let maxCount = 0;
+
+                for (const mood in moodCounts) {
+                    if (moodCounts[mood] > maxCount) {
+                        predominantMood = mood;
+                        maxCount = moodCounts[mood];
+                    }
+                }
+
+                return predominantMood;
+            }
+            function generatePlaylist(mood) {
+                // Base de datos ampliada de música organizada por estado de ánimo
+                const musicDatabase = {
+                    happy: [
+                        {
+                            title: currentLanguage === 'es' ? 'Playlist para Mejorar tu Día' : 'Playlist to Improve Your Day',
+                            description: currentLanguage === 'es' ? 'Canciones alegres para mantener tu buen humor y energía positiva' : 'Happy songs to maintain your good mood and positive energy',
+                            cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                            songs: [
+                                { title: 'Happy - Pharrell Williams', duration: '3:53' },
+                                { title: 'Can\'t Stop the Feeling! - Justin Timberlake', duration: '3:56' },
+                                { title: 'Don\'t Stop Me Now - Queen', duration: '3:29' },
+                                { title: 'Walking on Sunshine - Katrina & The Waves', duration: '3:58' },
+                                { title: 'Good Vibrations - The Beach Boys', duration: '3:38' }
+                            ]
+                        },
+                        {
+                            title: currentLanguage === 'es' ? 'Vibraciones Positivas' : 'Positive Vibes',
+                            description: currentLanguage === 'es' ? 'Música para sonreír y disfrutar el momento' : 'Music to smile and enjoy the moment',
+                            cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                            songs: [
+                                { title: 'Uptown Funk - Mark Ronson ft. Bruno Mars', duration: '4:30' },
+                                { title: 'Shake It Off - Taylor Swift', duration: '3:39' },
+                                { title: 'I Gotta Feeling - Black Eyed Peas', duration: '4:49' },
+                                { title: 'Dance Monkey - Tones and I', duration: '3:29' },
+                                { title: 'Feel Good Inc. - Gorillaz', duration: '3:42' }
+                            ]
+                        }
+                    ],
+                    sad: [
+                        {
+                            title: currentLanguage === 'es' ? 'Playlist para Momentos Melancólicos' : 'Playlist for Melancholic Moments',
+                            description: currentLanguage === 'es' ? 'Canciones que acompañan tus emociones y te ayudan a procesarlas' : 'Songs that accompany your emotions and help you process them',
+                            cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                            songs: [
+                                { title: 'Someone Like You - Adele', duration: '4:45' },
+                                { title: 'Hurt - Johnny Cash', duration: '3:38' },
+                                { title: 'The Scientist - Coldplay', duration: '5:09' },
+                                { title: 'Nothing Compares 2 U - Sinead O\'Connor', duration: '4:40' },
+                                { title: 'Everybody Hurts - R.E.M.', duration: '5:20' }
+                            ]
+                        }
+                    ],
+                    energetic: [
+                        {
+                            title: currentLanguage === 'es' ? 'Playlist Energética' : 'Energetic Playlist',
+                            description: currentLanguage === 'es' ? 'Música llena de energía para motivarte y mover tu cuerpo' : 'High-energy music to motivate you and move your body',
+                            cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                            songs: [
+                                { title: 'Eye of the Tiger - Survivor', duration: '4:05' },
+                                { title: 'Thunderstruck - AC/DC', duration: '4:52' },
+                                { title: 'Lose Yourself - Eminem', duration: '5:26' },
+                                { title: 'Jump - Van Halen', duration: '4:01' },
+                                { title: 'We Will Rock You - Queen', duration: '2:02' }
+                            ]
+                        }
+                    ],
+                    calm: [
+                        {
+                            title: currentLanguage === 'es' ? 'Playlist Relajante' : 'Relaxing Playlist',
+                            description: currentLanguage === 'es' ? 'Melodías tranquilas para calmar tu mente y encontrar paz' : 'Calm melodies to relax your mind and find peace',
+                            cover: 'https://images.unsplash.com/photo-1518604666860-9ed391f76460?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                            songs: [
+                                { title: 'Weightless - Marconi Union', duration: '8:59' },
+                                { title: 'Clair de Lune - Claude Debussy', duration: '5:04' },
+                                { title: 'Spiegel im Spiegel - Arvo Pärt', duration: '9:24' },
+                                { title: 'River Flows In You - Yiruma', duration: '3:10' },
+                                { title: 'Gymnopédie No.1 - Erik Satie', duration: '3:21' }
+                            ]
+                        }
+                    ],
+                    angry: [
+                        {
+                            title: currentLanguage === 'es' ? 'Playlist para Liberar Tensión' : 'Playlist to Release Tension',
+                            description: currentLanguage === 'es' ? 'Música intensa para canalizar tu enojo de manera constructiva' : 'Intense music to channel your anger constructively',
+                            cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                            songs: [
+                                { title: 'Break Stuff - Limp Bizkit', duration: '2:46' },
+                                { title: 'Killing in the Name - Rage Against the Machine', duration: '5:13' },
+                                { title: 'Du Hast - Rammstein', duration: '3:54' },
+                                { title: 'Bodies - Drowning Pool', duration: '3:21' },
+                                { title: 'Chop Suey! - System of a Down', duration: '3:30' }
+                            ]
+                        }
+                    ],
+                    romantic: [
+                        {
+                            title: currentLanguage === 'es' ? 'Playlist Romántica' : 'Romantic Playlist',
+                            description: currentLanguage === 'es' ? 'Canciones para enamorados y corazones sensibles' : 'Songs for lovers and sensitive hearts',
+                            cover: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                            songs: [
+                                { title: 'Perfect - Ed Sheeran', duration: '4:23' },
+                                { title: 'All of Me - John Legend', duration: '4:29' },
+                                { title: 'Thinking Out Loud - Ed Sheeran', duration: '4:41' },
+                                { title: 'Unchained Melody - The Righteous Brothers', duration: '3:36' },
+                                { title: 'Can\'t Help Falling in Love - Elvis Presley', duration: '3:02' }
+                            ]
+                        }
+                    ]
+                };
+
+                // Seleccionar aleatoriamente una de las playlists para el mood detectado
+                const moodPlaylists = musicDatabase[mood] || musicDatabase['happy'];
+                const randomIndex = Math.floor(Math.random() * moodPlaylists.length);
+                const playlist = moodPlaylists[randomIndex];
+
+                // Mostrar playlist en la UI
+                playlistCover.style.backgroundImage = `url(${playlist.cover})`;
+                playlistTitle.textContent = playlist.title;
+                playlistDescription.textContent = playlist.description;
+
+                // Limpiar lista de canciones
+                songList.innerHTML = '';
+
+                // Agregar canciones
+                playlist.songs.forEach(song => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>${song.title}</span> <span>${song.duration}</span>`;
+                    songList.appendChild(li);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
