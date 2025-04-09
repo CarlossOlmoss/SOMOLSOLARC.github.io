@@ -49,15 +49,16 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
         }
 
-        /* Controles del header */
+        /* Header responsive */
         .header-controls {
             display: flex;
             justify-content: flex-end;
-            gap: 1rem;
+            gap: 0.75rem;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
 
         .btn-icon {
@@ -87,31 +88,34 @@
             background-color: var(--card-bg);
             color: var(--text-color);
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             margin-bottom: 0.5rem;
             color: var(--primary);
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .subtitle {
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
             color: var(--dark);
             opacity: 0.8;
             margin-bottom: 1.5rem;
         }
 
+        /* Encuesta responsive */
         .survey-container {
             background-color: var(--card-bg);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: var(--card-shadow);
             margin-bottom: 2rem;
         }
@@ -126,19 +130,26 @@
         }
 
         h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            margin-bottom: 1.25rem;
             color: var(--primary);
             text-align: center;
         }
 
+        /* Grid de opciones responsive */
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
         }
 
-        @media (min-width: 600px) {
+        @media (min-width: 480px) {
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
             .options-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
@@ -148,13 +159,15 @@
             background-color: var(--card-bg);
             border: 2px solid var(--card-border);
             border-radius: 10px;
-            padding: 1.5rem 1rem;
+            padding: 1.25rem 0.75rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 120px;
+            justify-content: center;
         }
 
         .emotion-option:hover {
@@ -169,8 +182,22 @@
         }
 
         .emotion-icon {
-            font-size: 2rem;
+            font-size: 1.75rem;
             margin-bottom: 0.5rem;
+        }
+
+        .emotion-option span {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            padding: 0 0.25rem;
+        }
+
+        @media (min-width: 480px) {
+            .emotion-option span {
+                font-size: 0.95rem;
+            }
         }
 
         .happy {
@@ -197,18 +224,27 @@
             color: var(--romantic);
         }
 
+        /* Botones responsive */
         .btn {
             background-color: var(--primary);
             color: var(--btn-text);
             border: none;
-            padding: 0.8rem 1.5rem;
+            padding: 0.7rem 1.25rem;
             border-radius: 50px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             transition: all 0.3s ease;
             display: inline-block;
-            margin-top: 1.5rem;
+            margin-top: 1.25rem;
+            width: 100%;
+        }
+
+        @media (min-width: 480px) {
+            .btn {
+                width: auto;
+                padding: 0.8rem 1.5rem;
+            }
         }
 
         .btn:hover {
@@ -229,10 +265,20 @@
 
         .navigation {
             display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
         }
 
+        @media (min-width: 480px) {
+            .navigation {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+        }
+
+        /* Resultados responsive */
         .survey-result {
             text-align: center;
             animation: fadeIn 1s ease;
@@ -243,7 +289,7 @@
             height: 8px;
             background-color: var(--progress-bg);
             border-radius: 4px;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             overflow: hidden;
         }
 
@@ -252,10 +298,6 @@
             background-color: var(--primary);
             width: 0%;
             transition: width 0.3s ease;
-        }
-
-        .hidden {
-            display: none;
         }
 
         @keyframes fadeIn {
@@ -271,37 +313,46 @@
         }
 
         .question-text {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             line-height: 1.6;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            text-align: center;
+            padding: 0 0.5rem;
+        }
+
+        @media (min-width: 480px) {
+            .question-text {
+                font-size: 1.1rem;
+                padding: 0;
+            }
         }
 
         .mood-result {
-            margin: 2rem 0;
-            padding: 1.5rem;
+            margin: 1.5rem 0;
+            padding: 1.25rem;
             border-radius: 10px;
             background-color: var(--secondary);
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .mood-emoji {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
         }
 
-        /* Estilos para la playlist resultante */
+        /* Playlist responsive */
         .playlist-container {
             background-color: var(--card-bg);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: var(--card-shadow);
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .playlist-cover {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             border-radius: 10px;
             margin: 0 auto 1rem;
             background-size: cover;
@@ -309,11 +360,26 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
+        @media (min-width: 480px) {
+            .playlist-cover {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
         .song-list {
             list-style: none;
             text-align: left;
-            max-width: 400px;
+            max-width: 100%;
             margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        @media (min-width: 480px) {
+            .song-list {
+                max-width: 400px;
+                padding: 0;
+            }
         }
 
         .song-list li {
@@ -321,13 +387,20 @@
             border-bottom: 1px solid var(--card-border);
             display: flex;
             justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 480px) {
+            .song-list li {
+                font-size: 1rem;
+            }
         }
 
         .song-list li:last-child {
             border-bottom: none;
         }
 
-        /* Estilos para modo oscuro */
+        /* Modo oscuro */
         body.dark-mode {
             --bg-color: #1a1a2e;
             --text-color: #f5f6fa;
@@ -336,7 +409,6 @@
             --progress-bg: #2d4059;
             --slider-bg: #2d4059;
             --dark: #f5f6fa;
-
             background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
 
@@ -431,19 +503,19 @@
                 <div class="options-grid">
                     <div class="emotion-option" data-value="happy">
                         <i class="fas fa-laugh emotion-icon happy"></i>
-                        <span>Alegría/Felicidad</span>
+                        <span>Alegría</span>
                     </div>
                     <div class="emotion-option" data-value="sad">
                         <i class="fas fa-sad-tear emotion-icon sad"></i>
-                        <span>Tristeza/Melancolía</span>
+                        <span>Tristeza</span>
                     </div>
                     <div class="emotion-option" data-value="angry">
                         <i class="fas fa-angry emotion-icon angry"></i>
-                        <span>Enojo/Frustración</span>
+                        <span>Enojo</span>
                     </div>
                     <div class="emotion-option" data-value="calm">
                         <i class="fas fa-smile emotion-icon calm"></i>
-                        <span>Paz/Tranquilidad</span>
+                        <span>Paz</span>
                     </div>
                 </div>
 
@@ -469,11 +541,11 @@
                     </div>
                     <div class="emotion-option" data-value="sad">
                         <i class="fas fa-tired emotion-icon sad"></i>
-                        <span>Cansado/Agotado</span>
+                        <span>Cansado</span>
                     </div>
                     <div class="emotion-option" data-value="angry">
                         <i class="fas fa-head-side-virus emotion-icon angry"></i>
-                        <span>Tenso/Agitado</span>
+                        <span>Tenso</span>
                     </div>
                 </div>
 
@@ -491,19 +563,19 @@
                 <div class="options-grid">
                     <div class="emotion-option" data-value="happy">
                         <i class="fas fa-users emotion-icon happy"></i>
-                        <span>Socializar/Reír</span>
+                        <span>Socializar</span>
                     </div>
                     <div class="emotion-option" data-value="calm">
                         <i class="fas fa-book emotion-icon calm"></i>
-                        <span>Relajarme solo</span>
+                        <span>Relajarme</span>
                     </div>
                     <div class="emotion-option" data-value="energetic">
                         <i class="fas fa-dumbbell emotion-icon energetic"></i>
-                        <span>Hacer ejercicio</span>
+                        <span>Ejercicio</span>
                     </div>
                     <div class="emotion-option" data-value="romantic">
                         <i class="fas fa-heart emotion-icon romantic"></i>
-                        <span>Algo romántico</span>
+                        <span>Romántico</span>
                     </div>
                 </div>
 
@@ -521,19 +593,19 @@
                 <div class="options-grid">
                     <div class="emotion-option" data-value="happy">
                         <i class="fas fa-brain emotion-icon happy"></i>
-                        <span>Optimista/Positivo</span>
+                        <span>Optimista</span>
                     </div>
                     <div class="emotion-option" data-value="sad">
                         <i class="fas fa-cloud-rain emotion-icon sad"></i>
-                        <span>Pesimista/Negativo</span>
+                        <span>Pesimista</span>
                     </div>
                     <div class="emotion-option" data-value="calm">
                         <i class="fas fa-spa emotion-icon calm"></i>
-                        <span>Tranquilo/Equilibrado</span>
+                        <span>Tranquilo</span>
                     </div>
                     <div class="emotion-option" data-value="angry">
                         <i class="fas fa-fire emotion-icon angry"></i>
-                        <span>Agitado/Estresado</span>
+                        <span>Agitado</span>
                     </div>
                 </div>
 
@@ -543,17 +615,16 @@
                 </div>
             </div>
 
+            <!-- Resultados -->
             <div class="survey-step survey-result" id="survey-result">
                 <h2>Tu Estado de Ánimo</h2>
-                <div class="mood-result" id="mood-result">
-                </div>
+                <div class="mood-result" id="mood-result"></div>
 
                 <div class="playlist-container" id="playlist-container">
                     <h3 id="playlist-title"></h3>
                     <p id="playlist-description"></p>
                     <div class="playlist-cover" id="playlist-cover"></div>
-                    <ul class="song-list" id="song-list">
-                    </ul>
+                    <ul class="song-list" id="song-list"></ul>
                 </div>
 
                 <button class="btn" id="restart-btn">Hacer otra encuesta</button>
