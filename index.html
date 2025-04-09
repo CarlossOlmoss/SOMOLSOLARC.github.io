@@ -49,9 +49,7 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 1rem;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 2rem;
         }
 
         /* Controles del header */
@@ -113,9 +111,9 @@
         .survey-container {
             background-color: var(--card-bg);
             border-radius: 15px;
-            padding: 1rem;
+            padding: 2rem;
             box-shadow: var(--card-shadow);
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
 
         .survey-step {
@@ -365,71 +363,6 @@
             color: var(--text-color);
             opacity: 0.9;
         }
-
-        /* Estilos responsivos para móviles */
-        @media (max-width: 480px) {
-            .container {
-                padding: 0.5rem;
-            }
-
-            .survey-container {
-                padding: 1rem;
-            }
-
-            .options-grid {
-                grid-template-columns: 1fr !important;
-                gap: 0.5rem;
-            }
-
-            .emotion-option {
-                padding: 1rem;
-                flex-direction: row;
-                align-items: center;
-                justify-content: flex-start;
-                text-align: left;
-            }
-
-            .emotion-icon {
-                margin-right: 1rem;
-                margin-bottom: 0;
-                font-size: 1.5rem;
-                min-width: 30px;
-            }
-
-            #survey-q2,
-            #survey-q5 {
-                padding: 0.5rem;
-            }
-
-            .question-text {
-                font-size: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            h2 {
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-            }
-
-            .navigation {
-                margin-top: 1.5rem;
-            }
-
-            .btn {
-                padding: 0.7rem 1.2rem;
-                font-size: 0.9rem;
-                margin-top: 1rem;
-            }
-
-            .playlist-container {
-                padding: 1rem;
-            }
-
-            .playlist-cover {
-                width: 120px;
-                height: 120px;
-            }
-        }
     </style>
 </head>
 
@@ -485,7 +418,7 @@
                 </div>
 
                 <div class="navigation">
-                    <button class="btn btn-secondary" id="survey-prev1" disabled>Anterior</button>
+                    <button class="btn btn-secondary" id="survey-prev1">Anterior</button>
                     <button class="btn" id="survey-next1">Siguiente</button>
                 </div>
             </div>
@@ -610,11 +543,9 @@
                 </div>
             </div>
 
-            <!-- Resultado de la encuesta y playlist -->
             <div class="survey-step survey-result" id="survey-result">
                 <h2>Tu Estado de Ánimo</h2>
                 <div class="mood-result" id="mood-result">
-                    <!-- Aquí se mostrará el resultado -->
                 </div>
 
                 <div class="playlist-container" id="playlist-container">
@@ -622,14 +553,12 @@
                     <p id="playlist-description"></p>
                     <div class="playlist-cover" id="playlist-cover"></div>
                     <ul class="song-list" id="song-list">
-                        <!-- Las canciones se agregarán aquí con JavaScript -->
                     </ul>
                 </div>
 
                 <button class="btn" id="restart-btn">Hacer otra encuesta</button>
             </div>
 
-            <!-- Progreso -->
             <div class="progress-container">
                 <div class="progress-bar" id="survey-progress"></div>
             </div>
@@ -638,7 +567,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Textos multiidioma
             const translations = {
                 es: {
                     title: "MoodTunes",
@@ -778,13 +706,11 @@
                 }
             };
 
-            // Variables de estado
             let surveyAnswers = [];
             let currentSurveyStep = 1;
             let detectedMood = '';
             let currentLanguage = 'es';
 
-            // Elementos del DOM
             const surveySteps = document.querySelectorAll('.survey-step');
             const surveyProgress = document.getElementById('survey-progress');
             const moodResult = document.getElementById('mood-result');
@@ -797,31 +723,39 @@
             const themeToggle = document.getElementById('theme-toggle');
             const languageSelect = document.getElementById('language-select');
 
-            // Configuración inicial
             initializeApp();
 
             function initializeApp() {
-                // Cargar preferencias de tema
+
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 document.body.classList.toggle('dark-mode', savedTheme === 'dark');
                 updateThemeIcon(savedTheme);
 
-                // Cargar preferencia de idioma
                 const savedLanguage = localStorage.getItem('language') || 'es';
                 currentLanguage = savedLanguage;
                 languageSelect.value = savedLanguage;
                 updateContentLanguage(savedLanguage);
 
-                // Configurar event listeners
                 setupEventListeners();
+
+                document.getElementById('survey-prev1').addEventListener('click', () => prevSurveyStep(1));
+
+                function prevSurveyStep(current) {
+                    if (current === 1) {
+
+                        currentSurveyStep = 0;
+                    } else {
+                        currentSurveyStep = current - 1;
+                    }
+                    updateSurveyStep();
+                }
             }
 
             function setupEventListeners() {
-                // Configuración de eventos para la encuesta
+
                 document.getElementById('start-survey').addEventListener('click', startSurvey);
                 document.getElementById('restart-btn').addEventListener('click', restartSurvey);
 
-                // Botones de navegación de la encuesta
                 document.getElementById('survey-next1').addEventListener('click', () => nextSurveyStep(1));
                 document.getElementById('survey-next2').addEventListener('click', () => nextSurveyStep(2));
                 document.getElementById('survey-next3').addEventListener('click', () => nextSurveyStep(3));
@@ -833,13 +767,11 @@
                 document.getElementById('survey-prev4').addEventListener('click', () => prevSurveyStep(4));
                 document.getElementById('survey-prev5').addEventListener('click', () => prevSurveyStep(5));
 
-                // Configuración de opciones de emociones en la encuesta
                 document.querySelectorAll('.emotion-option').forEach(option => {
                     option.addEventListener('click', function () {
                         const questionId = this.closest('.survey-step').id;
                         const questionNumber = parseInt(questionId.replace('survey-q', ''));
 
-                        // Deseleccionar otras opciones en la misma pregunta
                         document.querySelectorAll(`#${questionId} .emotion-option`).forEach(opt => {
                             opt.classList.remove('selected');
                         });
@@ -849,7 +781,6 @@
                     });
                 });
 
-                // Event listeners para tema e idioma
                 themeToggle.addEventListener('click', toggleTheme);
                 languageSelect.addEventListener('change', changeLanguage);
             }
@@ -876,14 +807,12 @@
             function updateContentLanguage(language) {
                 const lang = translations[language] || translations['es'];
 
-                // Actualizar textos estáticos
                 document.querySelector('h1').innerHTML = `<i class="fas fa-music"></i> ${lang.title}`;
                 document.querySelector('.subtitle').textContent = lang.subtitle;
                 document.getElementById('start-survey').textContent = lang.startSurvey;
                 document.querySelector('#survey-start h2').textContent = lang.surveyTitle;
                 document.querySelector('#survey-start .question-text').textContent = lang.surveyDescription;
 
-                // Actualizar botones de navegación
                 document.querySelectorAll('.btn-secondary').forEach(btn => {
                     if (btn.textContent.includes("Anterior") || btn.textContent.includes("Previous")) {
                         btn.textContent = lang.prevButton;
@@ -901,10 +830,8 @@
 
                 document.getElementById('restart-btn').textContent = lang.restartButton;
 
-                // Actualizar preguntas y opciones
                 updateSurveyQuestions(language);
 
-                // Si estamos en el resultado, actualizarlo también
                 if (currentSurveyStep === 6) {
                     updateMoodResult();
                 }
@@ -913,14 +840,12 @@
             function updateSurveyQuestions(language) {
                 const lang = translations[language] || translations['es'];
 
-                // Actualizar preguntas
                 document.querySelector('#survey-q1 .question-text').textContent = lang.questions.q1;
                 document.querySelector('#survey-q2 .question-text').textContent = lang.questions.q2;
                 document.querySelector('#survey-q3 .question-text').textContent = lang.questions.q3;
                 document.querySelector('#survey-q4 .question-text').textContent = lang.questions.q4;
                 document.querySelector('#survey-q5 .question-text').textContent = lang.questions.q5;
 
-                // Actualizar opciones de todas las preguntas
                 updateQuestionOptions('#survey-q1', [
                     lang.options.energetic,
                     lang.options.balanced,
@@ -977,7 +902,6 @@
                 `;
             }
 
-            // Funciones de la encuesta
             function startSurvey() {
                 currentSurveyStep = 1;
                 surveyAnswers = [];
@@ -985,21 +909,17 @@
             }
 
             function restartSurvey() {
-                // Resetear todas las selecciones
                 document.querySelectorAll('.emotion-option').forEach(option => {
                     option.classList.remove('selected');
                 });
 
-                // Volver al paso inicial
                 currentSurveyStep = 0;
                 surveyAnswers = [];
                 updateSurveyStep();
 
-                // Ocultar el resultado y mostrar el contenedor de la encuesta
                 document.getElementById('survey-result').classList.remove('active');
                 document.getElementById('survey-start').classList.add('active');
 
-                // Resetear la barra de progreso
                 surveyProgress.style.width = '0%';
             }
 
@@ -1019,12 +939,10 @@
             }
 
             function updateSurveyStep() {
-                // Ocultar todos los pasos
                 surveySteps.forEach(step => {
                     step.classList.remove('active');
                 });
 
-                // Mostrar el paso actual
                 if (currentSurveyStep === 0) {
                     document.getElementById('survey-start').classList.add('active');
                 } else if (currentSurveyStep <= 5) {
@@ -1033,11 +951,9 @@
                     document.getElementById('survey-result').classList.add('active');
                 }
 
-                // Actualizar barra de progreso
                 const progressPercent = currentSurveyStep === 0 ? 0 : (currentSurveyStep / 5) * 100;
                 surveyProgress.style.width = `${progressPercent}%`;
 
-                // Habilitar/deshabilitar botones de anterior
                 if (currentSurveyStep > 1 && currentSurveyStep <= 5) {
                     document.getElementById(`survey-prev${currentSurveyStep}`).disabled = false;
                 }
@@ -1049,13 +965,10 @@
                     return;
                 }
 
-                // Calcular el estado de ánimo predominante
                 detectedMood = calculatePredominantMood();
 
-                // Mostrar el resultado
                 updateMoodResult();
 
-                // Generar y mostrar la playlist automáticamente
                 generatePlaylist(detectedMood);
 
                 currentSurveyStep = 6;
@@ -1076,7 +989,6 @@
                     moodCounts[answer]++;
                 });
 
-                // Determinar el estado de ánimo con más votos
                 let predominantMood = 'happy';
                 let maxCount = 0;
 
@@ -1090,7 +1002,7 @@
                 return predominantMood;
             }
             function generatePlaylist(mood) {
-                // Base de datos ampliada de música organizada por estado de ánimo
+
                 const musicDatabase = {
                     happy: [
                         {
@@ -1190,20 +1102,15 @@
                     ]
                 };
 
-                // Seleccionar aleatoriamente una de las playlists para el mood detectado
                 const moodPlaylists = musicDatabase[mood] || musicDatabase['happy'];
                 const randomIndex = Math.floor(Math.random() * moodPlaylists.length);
                 const playlist = moodPlaylists[randomIndex];
 
-                // Mostrar playlist en la UI
                 playlistCover.style.backgroundImage = `url(${playlist.cover})`;
                 playlistTitle.textContent = playlist.title;
                 playlistDescription.textContent = playlist.description;
 
-                // Limpiar lista de canciones
                 songList.innerHTML = '';
-
-                // Agregar canciones
                 playlist.songs.forEach(song => {
                     const li = document.createElement('li');
                     li.innerHTML = `<span>${song.title}</span> <span>${song.duration}</span>`;
